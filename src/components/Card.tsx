@@ -1,19 +1,18 @@
 import styles from "./card.module.css";
 import Image from "next/image";
 
-export default function Card() {
+export default function Card({serviceName, imgSrc}: {serviceName: string, imgSrc: string}) {
     return (
         <div className={styles.card}>
             <div className={styles.cardimg}>
-                <Image src={"/img/periodicMaintenance.jpg"}
+                <Image src={imgSrc}
                  alt="Service Picture"
                  fill={true}
-                 objectFit="cover"
+                 objectFit="contain"
                 />
             </div>
             <div className={styles.cardtxt}>
-                <h2 style={{color: "#2565AE"}}>Periodic Maintenance</h2>
-                <p>Standard engine oil and filter change, including a 30-point comprehensive vehicle safety inspection.</p>
+                <h2 style={{color: "#2565AE"}}>{serviceName}</h2>
             </div>
         </div>
     );
