@@ -10,8 +10,8 @@ export default function Banner() {
              objectFit="cover"
             />
             <div className={styles.bannerText}>
-                <h1>Welcome to ServiceDrive</h1>
-                <h3>Your One-Stop Solution For All Your Service Needs</h3>
+                <h1 className="text-4xl font-medium">Welcome to ServiceDrive</h1>
+                <h3 className="text-xl font-serif">Your One-Stop Solution For All Your Service Needs</h3>
             </div>
         </div>
     );

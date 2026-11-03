@@ -7,9 +7,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <Banner />
-        <div style={{margin:"20px", width:"100%", display:"flex", flexDirection: "row", 
-         alignContent: "space-around", justifyContent:"space-around", flexWrap: "wrap", rowGap: "20px"}}
-        >
+        <div className="grid w-full grid-cols-1 gap-5 p-5 sm:grid-cols-2 lg:grid-cols-4">
           <Card serviceName="Periodic Maintenance" imgSrc="/img/periodic-maintenance.jpg"/>
           <Card serviceName="Battery & Electrical System Check" imgSrc="/img/battery-electrical.jpg"/>
           <Card serviceName="Brake & Suspension Service" imgSrc="/img/brake-suspension.jpg"/>
