@@ -4,7 +4,7 @@ import InteractiveCard from "./InteractiveCard";
 
 export default function Card({serviceName, imgSrc}: {serviceName: string, imgSrc: string}) {
     return (
-        <InteractiveCard>
+        <InteractiveCard contentName={serviceName}>
             <div className="w-full h-[70%] relative rounded-t-lg">
                 <Image src={imgSrc}
                  alt="Service Picture"
