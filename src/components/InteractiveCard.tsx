@@ -22,7 +22,6 @@ export default function InteractiveCard ({children, contentName}: {children: Rea
 
     return (
         <div className="h-[300px] w-full rounded-lg shadow-lg bg-white overflow-hidden"
-         onClick={() => onCardSelected()}
          onMouseOver={(e) => onCardMouseAction(e)}
          onMouseOut={(e) => onCardMouseAction(e)}
         >

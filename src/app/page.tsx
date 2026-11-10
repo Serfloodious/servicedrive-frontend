@@ -7,7 +7,6 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <Banner />
-        <CardPanel />
       </main>
     </div>
   );
