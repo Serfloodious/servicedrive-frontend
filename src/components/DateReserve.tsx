@@ -7,8 +7,8 @@ import { Select, MenuItem } from "@mui/material"
 
 export default function DateReserve() {
     return (
-        <div className="bg-slate-100 rounded-lg gap-x-5 gap-y-2
-         w-fit px-10 py-5 flex flex-row justify-center"
+        <div className="bg-slate-100 rounded-lg gap-x-5 gap-y-5
+         w-fit px-10 py-5 flex flex-col justify-center"
         >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker className="bg-white"/>
