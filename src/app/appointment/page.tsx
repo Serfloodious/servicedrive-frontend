@@ -3,7 +3,7 @@ import DateAppointment from "@/components/DateAppointment";
 export default function Appointment() {
     return (
         <main className="w-[100%] flex flex-col items-center space-y-4">
-            <div className="text-xl font-medium">Service Appointment</div>
+            <div className="text-xl font-bold">Service Appointment</div>
             <div className="text-md text-left text-gray-600">
                 Please fill in the form below to appoint your desired service
             </div>
