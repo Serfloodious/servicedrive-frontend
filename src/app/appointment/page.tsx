@@ -1,4 +1,4 @@
-import DateReserve from "@/components/DateReserve";
+import DateAppointment from "@/components/DateAppointment";
 
 export default function Appointment() {
     return (
@@ -7,7 +7,7 @@ export default function Appointment() {
             <div className="text-md text-left text-gray-600">
                 Please fill in the form below to appoint your desired service
             </div>
-            <DateReserve />
+            <DateAppointment />
             <button name="Appoint Service" id="Appoint Service" 
              className="block rounded-md bg-sky-600 hover:bg-indigo-600 
              px-3 py-2 shadow-sm text-white"

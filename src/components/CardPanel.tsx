@@ -32,21 +32,24 @@ export default function CardPanel() {
     return (
         <div style={{width: "100%"}}>
             <div className="grid w-full grid-cols-1 gap-5 p-5 sm:grid-cols-2 lg:grid-cols-4">
-                {mockServiceRepo.map((serviceItem) => (
+                {
+                    mockServiceRepo.map((serviceItem) => (
                         <Link href={`/service/${serviceItem.sid}`} className="w-full" key={serviceItem.sid}>
                             <Card key={serviceItem.sid} serviceName={serviceItem.name} imgSrc={serviceItem.imgSrc}
                             onRating={(service: string, rating: number | null) => dispatchRating({type: "add", serviceName: service, rating})}
                             />
                         </Link>
-                    )
-                )}
+                    ))
+                }
             </div>
             <div className="w-full text-xl font-medium">Service List with Ratings: {ratingList.size}</div>
-            {Array.from(ratingList).map(([service, rating]) => 
-                <div key={service} data-testid={service} onClick={() => dispatchRating({type: "remove", serviceName: service})}>
-                    {service}: {rating}
-                </div>
-            )}
+            {
+                Array.from(ratingList).map(([service, rating]) => 
+                    <div key={service} data-testid={service} onClick={() => dispatchRating({type: "remove", serviceName: service})}>
+                        {service}: {rating}
+                    </div>
+                )
+            }
         </div>
     );
 }
