@@ -1,22 +1,16 @@
 import Image from "next/image";
 import getService from "@/libs/getService";
+import getServiceImgSrc from "@/libs/getServiceImgSrc";
 
 export default async function ServiceDetailPage({params}: {params: Promise<{sid: string}>}) {
 
     const {sid} = await params;
     const serviceDetails = await getService(sid);
-    const serviceToImgSrcMap = new Map([
-        ["Periodic Maintenance", "/img/periodic-maintenance.jpg"],
-        ["Battery & Electrical System Check", "/img/battery-electrical.jpg"],
-        ["Brake & Suspension Service", "/img/brake-suspension.jpg"],
-        ["Wheel Alignment & Tire Balancing", "/img/wheel-alignment.jpg"],
-        ["AC Cleaning & Ozone Sterilization", "/img/ac-cleaning.jpg"]
-    ]);
 
     return (
         <main className="text-center p-5">
             <div className="flex flex-row my-5">
-                <Image src={serviceToImgSrcMap.get(serviceDetails.data.name) ?? "/img/default.jpg"}
+                <Image src={getServiceImgSrc(serviceDetails.data.name)}
                     alt="Product Picture"
                     width={0} height={0} sizes="100vw"
                     className="rounded-lg w-[30%] bg-black"

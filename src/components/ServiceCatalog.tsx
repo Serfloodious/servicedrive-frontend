@@ -1,16 +1,10 @@
 import Link from "next/link";
 import Card from "./Card";
+import getServiceImgSrc from "@/libs/getServiceImgSrc";
 
 export default async function ServiceCatalog({servicesJson}: {servicesJson: Promise<ServiceJson>}) {
     
     const readyServicesJson = await servicesJson;
-    const serviceToImgSrcMap = new Map([
-        ["Periodic Maintenance", "/img/periodic-maintenance.jpg"],
-        ["Battery & Electrical System Check", "/img/battery-electrical.jpg"],
-        ["Brake & Suspension Service", "/img/brake-suspension.jpg"],
-        ["Wheel Alignment & Tire Balancing", "/img/wheel-alignment.jpg"],
-        ["AC Cleaning & Ozone Sterilization", "/img/ac-cleaning.jpg"]
-    ]);
 
     return (
         <>
@@ -20,7 +14,7 @@ export default async function ServiceCatalog({servicesJson}: {servicesJson: Prom
                     <Link href={`/service/${serviceItem._id}`} className="w-full" key={serviceItem._id}>
                         <Card key={serviceItem._id} 
                          serviceName={serviceItem.name} 
-                         imgSrc={serviceToImgSrcMap.get(serviceItem.name) ?? "/img/default.jpg"} 
+                         imgSrc={getServiceImgSrc(serviceItem.name)}
                         />
                     </Link>
                     )
