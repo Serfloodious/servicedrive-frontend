@@ -25,7 +25,3 @@ export default async function ServiceDetailPage({params}: {params: Promise<{sid:
         </main>
     );
 }
-
-export async function generateStaticParams() {
-    return [{sid: "001"}, {sid: "002"}, {sid: "003"}, {sid: "004"}, {sid: "005"}];
-}
