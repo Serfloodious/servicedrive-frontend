@@ -1,15 +1,18 @@
 import getServices from "@/libs/getServices";
-import CardPanel from "@/components/CardPanel";
 import ServiceCatalog from "@/components/ServiceCatalog";
+import { Suspense } from "react";
+import { LinearProgress } from "@mui/material";
 
-export default async function Service() {
+export default function Service() {
 
-    const servicesJson = await getServices();
+    const servicesJson = getServices();
 
     return (
         <main className="text-center p-5">
             <h1 className="text-xl font-medium"> Select Your Service </h1>
-            <ServiceCatalog servicesJson={servicesJson} />
+            <Suspense fallback={<p>Loading...<LinearProgress/></p>}>
+                <ServiceCatalog servicesJson={servicesJson} />
+            </Suspense>
         </main>
     );
 }
