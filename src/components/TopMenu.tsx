@@ -23,7 +23,7 @@ export default async function TopMenu() {
                     </div>
                 </Link>
             }
-            <TopMenuItem title="Appointment" pageRef="/appointment" />
+            <TopMenuItem title="Appointment" pageRef="/appointments" />
             <Image src={"/img/logo.png"} 
              className={styles.logoimg} 
              alt="logo" 

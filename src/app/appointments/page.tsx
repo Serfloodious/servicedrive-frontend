@@ -3,7 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { getServerSession } from "next-auth";
 import getUserProfile from "@/libs/getUserProfile";
 
-export default async function Appointment() {
+export default async function Appointments() {
 
     const session = await getServerSession(authOptions);
     if (!session || !session.user.token) return null;

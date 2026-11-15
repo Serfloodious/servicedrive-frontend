@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Card from "./Card";
 import getServiceImgSrc from "@/libs/getServiceImgSrc";
+import { ServiceJson } from "../../interface";
 
 export default async function ServiceCatalog({servicesJson}: {servicesJson: Promise<ServiceJson>}) {
     
