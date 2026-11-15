@@ -17,8 +17,8 @@ export default async function ServiceCatalog({servicesJson}: {servicesJson: Prom
             Explore {readyServicesJson.count} services in our catalog
             <div className="grid w-full grid-cols-1 gap-5 p-5 sm:grid-cols-2 lg:grid-cols-4">
                 {readyServicesJson.data.map((serviceItem) => (
-                    <Link href={`/service/${serviceItem.id}`} className="w-full" key={serviceItem.id}>
-                        <Card key={serviceItem.id} 
+                    <Link href={`/service/${serviceItem._id}`} className="w-full" key={serviceItem._id}>
+                        <Card key={serviceItem._id} 
                          serviceName={serviceItem.name} 
                          imgSrc={serviceToImgSrcMap.get(serviceItem.name) ?? "/img/default.jpg"} 
                         />

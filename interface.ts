@@ -6,7 +6,6 @@ interface ServiceItem {
     serviceFee: Number,
     isActive: Boolean,
     __v: number,
-    id: string
   }
   
   interface ServiceJson {
