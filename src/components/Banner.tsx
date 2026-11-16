@@ -31,7 +31,7 @@ export default function Banner() {
                 : null
             }
             <button className={styles.bannerButton} 
-             onClick={(event) => {event.stopPropagation(); router.push('service')}}
+             onClick={(event) => {event.stopPropagation(); router.push('services')}}
             >
                 Select Your Car Service. NOW!
             </button>

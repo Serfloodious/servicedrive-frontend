@@ -6,8 +6,25 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { TextField } from "@mui/material"
 import { useState } from "react"
 import { Dayjs } from "dayjs"
+import { ServiceItem } from "../../interface"
 
-export default function DateAppointment({onDateChange, onTimeChange}: {onDateChange: Function, onTimeChange: Function}) {
+type DateAppointmentProps = {
+    services: ServiceItem[];
+    selectedServiceId: string;
+    servicesError: string | null;
+    onServiceChange: (serviceId: string) => void;
+    onDateChange: (value: Dayjs | null) => void;
+    onTimeChange: (value: Dayjs | null) => void;
+};
+
+export default function DateAppointment({
+    services,
+    selectedServiceId,
+    servicesError,
+    onServiceChange,
+    onDateChange,
+    onTimeChange
+}: DateAppointmentProps) {
     
     const [appointmentDate, setAppointmentDate] = useState<Dayjs | null>(null);
     const [startTime, setStartTime] = useState<Dayjs | null>(null);
@@ -16,6 +33,23 @@ export default function DateAppointment({onDateChange, onTimeChange}: {onDateCha
         <div className="bg-slate-100 rounded-lg gap-x-5 gap-y-5
          w-fit px-10 py-5 flex flex-col justify-center"
         >
+            <label htmlFor="service" className="text-lg font-semibold">Service</label>
+            <select
+                id="service"
+                name="service"
+                value={selectedServiceId}
+                onChange={(event) => onServiceChange(event.target.value)}
+                className="rounded-md border border-gray-300 bg-white px-3 py-2"
+                required
+            >
+                <option value="" disabled>Select a service</option>
+                {services.map((service) => (
+                    <option key={service._id} value={service._id}>
+                        {service.name}
+                    </option>
+                ))}
+            </select>
+            {servicesError && <p className="text-sm text-red-600">{servicesError}</p>}
             <TextField variant="standard" name="Registration-Number" id="Registration-Number" label="Registration-Number" className="h-[2em] w-[200px]"/>
             <TextField variant="standard" name="Brand" id="Brand" label="Brand" className="h-[2em] w-[200px]"/>
             <TextField variant="standard" name="Model" id="Model" label="Model" className="h-[2em] w-[200px]"/>

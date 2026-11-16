@@ -26,7 +26,7 @@ export default async function TopMenu() {
                 }
                 <TopMenuItem title="My Appointment" pageRef="/myappointment" />
             </div>
-            <TopMenuItem title="Appointment" pageRef="/appointments" />
+            <TopMenuItem title="Appointments" pageRef="/appointments" />
             <Image src={"/img/logo.png"} 
              className={styles.logoimg} 
              alt="logo" 
