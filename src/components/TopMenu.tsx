@@ -11,18 +11,21 @@ export default async function TopMenu() {
 
     return (
         <div className={styles.menucontainer}>
-            {
-                session ? <Link href="/api/auth/signout">
-                    <div className="flex items-center absolute left-0 h-full px-2 text-cyan-600 text-sm">
-                        Sign-Out of {session.user?.name}
-                    </div>
-                </Link>
-                : <Link href="/api/auth/signin">
-                    <div className="flex items-center absolute left-0 h-full px-2 text-cyan-600 text-sm">
-                        Sign-In
-                    </div>
-                </Link>
-            }
+            <div className={styles.leftmenu}>
+                {
+                    session ? <Link href="/api/auth/signout">
+                        <div className="flex items-center h-full px-2 text-cyan-600 text-sm">
+                            Sign-Out of {session.user?.name}
+                        </div>
+                    </Link>
+                    : <Link href="/api/auth/signin">
+                        <div className="flex items-center h-full px-2 text-cyan-600 text-sm">
+                            Sign-In
+                        </div>
+                    </Link>
+                }
+                <TopMenuItem title="My Appointment" pageRef="/myappointment" />
+            </div>
             <TopMenuItem title="Appointment" pageRef="/appointments" />
             <Image src={"/img/logo.png"} 
              className={styles.logoimg} 

@@ -17,6 +17,7 @@ export interface ServiceJson {
 
 export interface AppointmentItem {
   service: string;
+  name: string;
   registrationNumber: string;
   brand: string;
   model: string;
