@@ -1,91 +1,113 @@
-"use client";
-
-import DateAppointment from "@/components/DateAppointment";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Dayjs } from "dayjs";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { addAppointment } from "@/redux/features/appointmentSlice";
 import getServices from "@/libs/getServices";
-import { AppointmentItem, ServiceItem } from "../../../../interface";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { getServerSession } from "next-auth";
+import { updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
-export default function AddAppointment() {
+export default async function AddAppointment() {
 
-    const urlParams = useSearchParams();
-    const serviceIdFromUrl = urlParams.get("id") || "";
-    const serviceNameFromUrl = urlParams.get("name") || "";
-    const dispatch = useDispatch<AppDispatch>();
+    const servicesJson = getServices();
+    const readyServicesJson = await servicesJson;
 
-    const [services, setServices] = useState<ServiceItem[]>([]);
-    const [selectedServiceId, setSelectedServiceId] = useState(serviceIdFromUrl);
-    const [selectedServiceName, setSelectedServiceName] = useState(serviceNameFromUrl);
-    const [servicesError, setServicesError] = useState<string | null>(null);
-    const [appointmentDate, setAppointmentDate] = useState<Dayjs | null>(null);
-    const [startTime, setStartTime] = useState<Dayjs | null>(null);
+    const addAppointment = async (addAppointmentForm: FormData) => {
+        "use server";
+        const service = addAppointmentForm.get("service")
+        const registrationNumber = addAppointmentForm.get("registrationNumber")
+        const brand = addAppointmentForm.get("brand")
+        const model = addAppointmentForm.get("model")
+        const appointmentDate = addAppointmentForm.get("appointmentDate")
+        const startTime = addAppointmentForm.get("startTime")
 
-    useEffect(() => {
-        const loadServices = async () => {
-            try {
-                const servicesJson = await getServices();
-                setServices(servicesJson.data);
-
-                const selectedService = servicesJson.data.find(
-                    (service: ServiceItem) => service._id === serviceIdFromUrl
-                );
-                if (selectedService) {
-                    setSelectedServiceName(selectedService.name);
-                }
-            } catch (error) {
-                console.error("Failed to load services", error);
-                setServicesError("Unable to load services. Please try again.");
-            }
-        };
-
-        loadServices();
-    }, [serviceIdFromUrl]);
-
-    const makeAppointment = () => {
-        if (selectedServiceId && appointmentDate && startTime) {
-            const item: AppointmentItem = {
-                service: selectedServiceId,
-                name: selectedServiceName,
-                registrationNumber: (document.getElementById("Registration-Number") as HTMLInputElement).value,
-                brand: (document.getElementById("Brand") as HTMLInputElement).value,
-                model: (document.getElementById("Model") as HTMLInputElement).value,
-                appointmentDate: appointmentDate.format("YYYY-MM-DD"),
-                startTime: startTime.format("HH:mm")
-            };
-            dispatch(addAppointment(item));
+        if (![service, registrationNumber, brand, model, appointmentDate, startTime]
+            .every((value): value is string => typeof value === "string" && value.trim().length > 0)) {
+            throw new Error("Please complete all appointment fields");
         }
-    };
+
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.token) {
+            throw new Error("You must be logged in to add an appointment");
+        }
+
+        const response = await fetch("http://localhost:5000/api/v1/appointments", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${session.user.token}`,
+            },
+            body: JSON.stringify({
+                service,
+                registrationNumber,
+                brand,
+                model,
+                appointmentDate,
+                startTime,
+            }),
+        });
+
+        if (!response.ok) {
+            const result = await response.json().catch(() => null);
+            throw new Error(result?.error || "Failed to add appointment");
+        }
+
+        updateTag("appointments");
+        redirect("/appointments");
+    }
 
     return (
-        <main className="w-[100%] flex flex-col items-center space-y-4">
-            <div className="text-xl font-bold">New Appointment</div>
-            <div className="text-xl font-bold">{selectedServiceName}</div>
-            <div className="text-md text-left text-gray-600">
-                Please fill in the form below to appoint your desired service
-            </div>
-            <DateAppointment
-             services={services}
-             selectedServiceId={selectedServiceId}
-             servicesError={servicesError}
-             onServiceChange={(serviceId) => {
-                 const selectedService = services.find((service) => service._id === serviceId);
-                 setSelectedServiceId(serviceId);
-                 setSelectedServiceName(selectedService?.name || "");
-             }}
-             onDateChange={(value) => {setAppointmentDate(value)}}
-             onTimeChange={(value) => {setStartTime(value)}}
-            />
-            <button name="Appoint Service" id="Appoint Service" 
-             className="block rounded-md bg-sky-600 hover:bg-indigo-600 
-             px-3 py-2 shadow-sm text-white"
-             onClick={makeAppointment}
-            >
-                Appoint this Service
-            </button>
+        <main className="w-full p-5 flex flex-col items-center">
+            <form action={addAppointment} className="w-full max-w-4xl bg-slate-100 p-5" id="appointmentForm">
+                <div className="text-xl text-blue-700">Add Appointment</div>
+                <div className="flex items-center w-full my-2">
+                    <label className="w-auto block whitespace-nowrap text-gray-700 pr-4" htmlFor="service">Service</label>
+                    <select required id="service" name="service" form="appointmentForm"
+                        className="bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400"
+                    >
+                        <option value="" disabled>Select Service</option>
+                        {readyServicesJson.data.map((serviceItem) => (
+                            <option key={serviceItem._id} value={serviceItem._id}>
+                                {serviceItem.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="flex items-center w-full my-2">
+                    <label className="w-auto block whitespace-nowrap text-gray-700 pr-4" htmlFor="registrationNumber">Registration Number</label>
+                    <input type="text" required id="registrationNumber" name="registrationNumber" placeholder="1กข-1234"
+                        className="bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400"
+                    />
+                </div>
+                <div className="flex items-center w-full my-2">
+                    <label className="w-auto block whitespace-nowrap text-gray-700 pr-4" htmlFor="brand">Brand</label>
+                    <input type="text" required id="brand" name="brand" placeholder="Brand"
+                        className="bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400"
+                    />
+                </div>
+                <div className="flex items-center w-full my-2">
+                    <label className="w-auto block whitespace-nowrap text-gray-700 pr-4" htmlFor="model">Model</label>
+                    <input type="text" required id="model" name="model" placeholder="Model"
+                        className="bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400"
+                    />
+                </div>
+                <div className="flex items-center w-full my-2">
+                    <label className="w-auto block whitespace-nowrap text-gray-700 pr-4" htmlFor="appointmentDate">Appointment Date</label>
+                    <input type="date" required id="appointmentDate" name="appointmentDate" placeholder="Appointment Date"
+                        className="bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400"
+                    />
+                </div>
+                <div className="flex items-center w-full my-2">
+                    <label className="w-auto block whitespace-nowrap text-gray-700 pr-4" htmlFor="startTime">Start Time</label>
+                    <input type="time" required id="startTime" name="startTime" placeholder="Start Time"
+                        className="bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400"
+                    />
+                </div>
+                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded">Add Appointment</button>
+            </form>
         </main>
-    )
+    );
 }

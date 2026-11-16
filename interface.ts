@@ -4,7 +4,6 @@ export interface ServiceItem {
   description: string,
   estimatedDuration: Number,
   serviceFee: Number,
-  isActive: Boolean,
   __v: number,
 }
   
@@ -16,6 +15,7 @@ export interface ServiceJson {
 }
 
 export interface AppointmentItem {
+  _id: string;
   service: string;
   name: string;
   registrationNumber: string;
@@ -23,4 +23,11 @@ export interface AppointmentItem {
   model: string;
   appointmentDate: string;
   startTime: string;
+}
+
+export interface AppointmentJson {
+  success: boolean,
+  count: number,
+  pagination: Object,
+  data: AppointmentItem[]
 }
