@@ -2,10 +2,14 @@ import Link from "next/link";
 import Card from "./Card";
 import getServiceImgSrc from "@/libs/getServiceImgSrc";
 import { ServiceJson } from "../../interface";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { getServerSession } from "next-auth";
 
 export default async function ServiceCatalog({servicesJson}: {servicesJson: Promise<ServiceJson>}) {
     
     const readyServicesJson = await servicesJson;
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user.token) return null;
 
     return (
         <>
@@ -21,6 +25,16 @@ export default async function ServiceCatalog({servicesJson}: {servicesJson: Prom
                     )
                 )}
             </div>
+            {
+                session.user.role === "admin" ?
+                <Link href="/services/add"
+                 className="inline-block rounded-md bg-sky-600 px-3 py-2 text-white! shadow-sm hover:bg-indigo-600"
+                >
+                    Add Service
+                </Link>
+                : null
+            }
+            
         </>
     )
 }

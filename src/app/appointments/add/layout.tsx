@@ -1,4 +1,4 @@
-import styles from "./appointments.module.css";
+import styles from "./addappointment.module.css";
 
 export default function AppointmentLayout({ children }: { children: React.ReactNode }) {
     return (
