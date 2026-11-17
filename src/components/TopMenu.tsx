@@ -4,6 +4,8 @@ import TopMenuItem from "./TopMenuItem";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import Link from "next/link";
+import BackLink from "./BackLink";
+import HomeLink from "./HomeLink";
 
 export default async function TopMenu() {
 
@@ -33,7 +35,8 @@ export default async function TopMenu() {
                     </Link>
                 }
             </div>
-            <TopMenuItem title="Home" pageRef="/" />
+            <HomeLink />
+            <BackLink />
             <TopMenuItem title="Services" pageRef="/services" />
             <TopMenuItem title="Appointments" pageRef="/appointments" />
             <Image src={"/img/logo.png"} 
