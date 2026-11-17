@@ -140,7 +140,7 @@ export default async function EditAppointment({ params }: EditAppointmentPagePro
                         text-gray-700 focus:outline-none focus:border-blue-400"
                     />
                 </div>
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded">Update Appointment</button>
+                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded">Edit Appointment</button>
             </form>
         </main>
     );

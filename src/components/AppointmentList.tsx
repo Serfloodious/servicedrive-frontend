@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
+import DeleteAppointmentButton from "./DeleteAppointmentButton";
 
 export default async function AppointmentList({appointmentsJson}: {appointmentsJson: Promise<AppointmentJson>}) {
 
@@ -54,15 +55,10 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
                             >
                                 Edit
                             </Link>
-                            <form action={deleteAppointment} className="ml-2 inline-block">
-                                <input type="hidden" name="appointmentId" value={item._id} />
-                                <button
-                                    type="submit"
-                                    className="inline-block rounded-md bg-red-500 px-3 py-2 text-white! shadow-sm hover:bg-red-600"
-                                >
-                                    Delete
-                                </button>
-                            </form>
+                            <DeleteAppointmentButton
+                                action={deleteAppointment}
+                                appointmentId={item._id}
+                            />
                         </div>
                     ))
                     : <div className="text-sm text-center">No Service Appointment</div>
