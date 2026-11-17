@@ -4,6 +4,9 @@ import getServiceImgSrc from "@/libs/getServiceImgSrc";
 import Link from "next/link";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import DeleteServiceButton from "@/components/DeleteServiceButton";
 
 export default async function ServiceDetailPage({params}: {params: Promise<{sid: string}>}) {
 
@@ -11,6 +14,35 @@ export default async function ServiceDetailPage({params}: {params: Promise<{sid:
     const serviceDetails = await getService(sid);
     const session = await getServerSession(authOptions);
     if (!session || !session.user.token) return null;
+
+    const deleteService = async (formData: FormData) => {
+        "use server";
+
+        const serviceId = formData.get("serviceId");
+        if (typeof serviceId !== "string" || serviceId !== sid) {
+            throw new Error("Service ID is required");
+        }
+
+        const currentSession = await getServerSession(authOptions);
+        if (!currentSession?.user?.token || currentSession.user.role !== "admin") {
+            throw new Error("You must be an admin to delete a service");
+        }
+
+        const response = await fetch(`http://localhost:5000/api/v1/services/${serviceId}`, {
+            method: "DELETE",
+            headers: {
+                authorization: `Bearer ${currentSession.user.token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const result = await response.json().catch(() => null);
+            throw new Error(result?.error || "Failed to delete service");
+        }
+
+        revalidatePath("/services");
+        redirect("/services");
+    };
 
     return (
         <main className="text-center p-5">
@@ -32,6 +64,23 @@ export default async function ServiceDetailPage({params}: {params: Promise<{sid:
                                 Add Appointment
                             </button>
                         </Link>
+                        : null
+                    }
+                    {
+                        session.user.role === "admin" ?
+                        <Link href={`/services/${sid}/edit`}>
+                            <button className="block rounded-md bg-amber-500 hover:bg-amber-600 px-3 py-1 shadow-sm text-white">
+                                Edit
+                            </button>
+                        </Link>
+                        : null
+                    }
+                    {
+                        session.user.role === "admin" ?
+                        <DeleteServiceButton
+                                action={deleteService}
+                                serviceId={sid}
+                            />
                         : null
                     }
                 </div>
