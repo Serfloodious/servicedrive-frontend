@@ -34,6 +34,7 @@ export default async function TopMenu() {
                         </div>
                     </Link>
                 }
+                <TopMenuItem title="Profile" pageRef="/profile" />
             </div>
             <HomeLink />
             <BackLink />
