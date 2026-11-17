@@ -3,13 +3,19 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../register/register.module.css";
 
 export default function LoginPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const callbackUrl = searchParams.get("callbackUrl");
+    const safeCallbackUrl = callbackUrl?.startsWith("/") &&
+        !callbackUrl.startsWith("//")
+        ? callbackUrl
+        : "/";
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -25,13 +31,14 @@ export default function LoginPage() {
                 email,
                 password,
                 redirect: false,
+                callbackUrl: safeCallbackUrl,
             });
 
             if (!result || result.error) {
                 throw new Error("Invalid email or password.");
             }
 
-            router.replace("/");
+            router.replace(safeCallbackUrl);
             router.refresh();
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : "Unable to sign in.");
