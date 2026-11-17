@@ -3,6 +3,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { getServerSession } from "next-auth";
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import getAppointments from "@/libs/getAppointments";
+import { getFutureAppointmentCount, MAX_FUTURE_APPOINTMENTS } from "@/libs/getFutureAppointmentCount";
 
 type AddAppointmentPageProps = {
     searchParams: Promise<{ error?: string | string[] }>;
@@ -10,8 +12,15 @@ type AddAppointmentPageProps = {
 
 export default async function AddAppointment({ searchParams }: AddAppointmentPageProps) {
 
-    const servicesJson = getServices();
-    const readyServicesJson = await servicesJson;
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.token) return null;
+
+    const [readyServicesJson, appointmentsJson] = await Promise.all([
+        getServices(),
+        getAppointments(session.user.token),
+    ]);
+    const futureAppointmentCount = getFutureAppointmentCount(appointmentsJson);
+    const hasFutureQuota = futureAppointmentCount < MAX_FUTURE_APPOINTMENTS;
     const params = await searchParams;
     const errorMessage = typeof params.error === "string" ? params.error : undefined;
 
@@ -29,8 +38,8 @@ export default async function AddAppointment({ searchParams }: AddAppointmentPag
             redirect("/appointments/add?error=Please%20complete%20all%20appointment%20fields");
         }
 
-        const session = await getServerSession(authOptions);
-        if (!session?.user?.token) {
+        const currentSession = await getServerSession(authOptions);
+        if (!currentSession?.user?.token) {
             redirect("/appointments/add?error=You%20must%20be%20logged%20in%20to%20add%20an%20appointment");
         }
 
@@ -38,7 +47,7 @@ export default async function AddAppointment({ searchParams }: AddAppointmentPag
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                authorization: `Bearer ${session.user.token}`,
+                authorization: `Bearer ${currentSession.user.token}`,
             },
             body: JSON.stringify({
                 service,
@@ -119,7 +128,17 @@ export default async function AddAppointment({ searchParams }: AddAppointmentPag
                         text-gray-700 focus:outline-none focus:border-blue-400"
                     />
                 </div>
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded">Add Appointment</button>
+                <button
+                    type="submit"
+                    disabled={!hasFutureQuota}
+                    className={`rounded p-2 text-white ${
+                        hasFutureQuota
+                            ? "bg-blue-500 hover:bg-blue-700"
+                            : "cursor-not-allowed bg-gray-400"
+                    }`}
+                >
+                    Add Appointment
+                </button>
             </form>
         </main>
     );

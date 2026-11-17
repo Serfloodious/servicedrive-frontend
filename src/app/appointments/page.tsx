@@ -14,7 +14,10 @@ export default async function Appointments() {
     return (
         <main>
             <Suspense fallback={<p className="text-center">Loading...<LinearProgress/></p>}>
-                <AppointmentList appointmentsJson={appointmentsJson} />
+                <AppointmentList
+                    appointmentsJson={appointmentsJson}
+                    showQuota={session.user.role === "member"}
+                />
             </Suspense>
         </main>
     )

@@ -4,12 +4,22 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import DeleteAppointmentButton from "./DeleteAppointmentButton";
+import FutureQuotaIndicator from "./FutureQuotaIndicator";
+import { getFutureAppointmentCount, MAX_FUTURE_APPOINTMENTS } from "@/libs/getFutureAppointmentCount";
 
-export default async function AppointmentList({appointmentsJson}: {appointmentsJson: Promise<AppointmentJson>}) {
+export default async function AppointmentList({
+    appointmentsJson,
+    showQuota,
+}: {
+    appointmentsJson: Promise<AppointmentJson>;
+    showQuota: boolean;
+}) {
 
     const readyAppointmentsJson = await appointmentsJson;
     const session = await getServerSession(authOptions);
     if (!session || !session.user.token) return null;
+    const futureAppointmentCount = getFutureAppointmentCount(readyAppointmentsJson);
+    const hasFutureQuota = futureAppointmentCount < MAX_FUTURE_APPOINTMENTS;
 
     const getNewDateString = (dateString: string) => {
         const date = new Date(dateString);
@@ -40,6 +50,7 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
 
     return (
         <>
+            {showQuota && <FutureQuotaIndicator used={futureAppointmentCount} />}
             <div className="grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
                 {
                     readyAppointmentsJson.count > 0 ? readyAppointmentsJson.data.map((item) => (
@@ -67,11 +78,22 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
             {
                 session.user.role === "member" ?
                 <div className="flex justify-center">
-                    <Link href="/appointments/add"
-                     className="inline-block rounded-md bg-sky-600 px-3 py-2 text-white! shadow-sm hover:bg-indigo-600"
-                    >
-                        Add Appointment
-                    </Link>
+                    {hasFutureQuota ? (
+                        <Link
+                            href="/appointments/add"
+                            className="inline-block rounded-md bg-sky-600 px-3 py-2 text-white! shadow-sm hover:bg-indigo-600"
+                        >
+                            Add Appointment
+                        </Link>
+                    ) : (
+                        <button
+                            type="button"
+                            disabled
+                            className="cursor-not-allowed rounded-md bg-gray-400 px-3 py-2 text-white! shadow-sm"
+                        >
+                            Add Appointment
+                        </button>
+                    )}
                 </div>
                 : null
             }
