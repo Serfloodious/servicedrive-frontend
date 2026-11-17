@@ -39,7 +39,7 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
 
     return (
         <>
-            <div className="grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
                 {
                     readyAppointmentsJson.count > 0 ? readyAppointmentsJson.data.map((item) => (
                         <div className="w-full rounded bg-slate-200 px-5 py-2" key={item._id}>
