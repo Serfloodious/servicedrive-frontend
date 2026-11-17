@@ -23,10 +23,11 @@ export default async function AddService() {
             console.log("Service added successfully: ", service);
         } catch (error) {
             console.error(error);
+            throw new Error("Failed to add service");
         }
 
         updateTag("services");
-        redirect("/services");
+        redirect("/services?toast=service-added");
     }
 
     return (

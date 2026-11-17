@@ -41,7 +41,7 @@ export default async function ServiceDetailPage({params}: {params: Promise<{sid:
         }
 
         revalidatePath("/services");
-        redirect("/services");
+        redirect("/services?toast=service-deleted");
     };
 
     return (

@@ -83,7 +83,7 @@ export default async function EditAppointment({ params }: EditAppointmentPagePro
         }
 
         updateTag("appointments");
-        redirect("/appointments");
+        redirect("/appointments?toast=appointment-updated");
     };
 
     return (

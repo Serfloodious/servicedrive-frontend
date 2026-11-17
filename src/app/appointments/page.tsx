@@ -13,7 +13,7 @@ export default async function Appointments() {
 
     return (
         <main>
-            <Suspense fallback={<p>Loading...<LinearProgress/></p>}>
+            <Suspense fallback={<p className="text-center">Loading...<LinearProgress/></p>}>
                 <AppointmentList appointmentsJson={appointmentsJson} />
             </Suspense>
         </main>

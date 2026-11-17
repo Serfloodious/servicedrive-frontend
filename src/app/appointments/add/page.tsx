@@ -57,7 +57,7 @@ export default async function AddAppointment({ searchParams }: AddAppointmentPag
         }
 
         updateTag("appointments");
-        redirect("/appointments");
+        redirect("/appointments?toast=appointment-added");
     }
 
     return (

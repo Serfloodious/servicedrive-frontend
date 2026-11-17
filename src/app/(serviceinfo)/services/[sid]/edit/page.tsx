@@ -73,7 +73,7 @@ export default async function EditService({ params }: EditServicePageProps) {
         }
 
         updateTag("services");
-        redirect(`/services/${sid}`);
+        redirect(`/services/${sid}?toast=service-updated`);
     };
 
     return (

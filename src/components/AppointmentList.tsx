@@ -2,7 +2,7 @@ import { AppointmentJson } from "../../interface";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import DeleteAppointmentButton from "./DeleteAppointmentButton";
 
 export default async function AppointmentList({appointmentsJson}: {appointmentsJson: Promise<AppointmentJson>}) {
@@ -35,7 +35,7 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
             throw new Error("Failed to delete appointment");
         }
 
-        revalidatePath("/appointments");
+        redirect("/appointments?toast=appointment-deleted");
     };
 
     return (
