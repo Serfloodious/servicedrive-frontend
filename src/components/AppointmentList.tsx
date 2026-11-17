@@ -55,7 +55,7 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
                                     type="submit"
                                     className="inline-block rounded-md bg-red-500 px-3 py-2 text-white! shadow-sm hover:bg-red-600"
                                 >
-                                    Delete Appointment
+                                    Delete
                                 </button>
                             </form>
                         </div>
