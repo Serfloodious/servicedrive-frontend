@@ -72,7 +72,7 @@ export default async function AppointmentList({
                             />
                         </div>
                     ))
-                    : <div className="text-sm text-center">No Service Appointment</div>
+                    : <div className="col-span-full text-center text-lg">No Service Appointment</div>
                 }
             </div>
             {
