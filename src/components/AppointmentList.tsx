@@ -10,6 +10,11 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
     const session = await getServerSession(authOptions);
     if (!session || !session.user.token) return null;
 
+    const getNewDateString = (dateString: string) => {
+        const date = new Date(dateString);
+        return `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
+    }
+
     const deleteAppointment = async (formData: FormData) => {
         "use server";
 
@@ -36,21 +41,21 @@ export default async function AppointmentList({appointmentsJson}: {appointmentsJ
         <>
             <div className="grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
                 {
-                    readyAppointmentsJson.count > 0 ? readyAppointmentsJson.data.map((appointmentItem) => (
-                        <div className="w-full rounded bg-slate-200 px-5 py-2" key={appointmentItem._id}>
-                            <div className="text-xl"><b>{appointmentItem.name}</b></div>
-                            <div className="text-sm"><b>Registration-Number: </b>{appointmentItem.registrationNumber}</div>
-                            <div className="text-sm"><b>Brand: </b>{appointmentItem.brand}</div>
-                            <div className="text-sm"><b>Model: </b>{appointmentItem.model}</div>
-                            <div className="text-sm"><b>Appointment-Date: </b>{appointmentItem.appointmentDate}</div>
-                            <div className="text-sm"><b>Start-Time: </b>{appointmentItem.startTime}</div>
-                            <Link href={`/appointments/${appointmentItem._id}/edit`} 
+                    readyAppointmentsJson.count > 0 ? readyAppointmentsJson.data.map((item) => (
+                        <div className="w-full rounded bg-slate-200 px-5 py-2" key={item._id}>
+                            <div className="text-xl"><b>{item.name}</b></div>
+                            <div className="text-sm"><b>Registration-Number: </b>{item.registrationNumber}</div>
+                            <div className="text-sm"><b>Brand: </b>{item.brand}</div>
+                            <div className="text-sm"><b>Model: </b>{item.model}</div>
+                            <div className="text-sm"><b>Appointment-Date: </b>{getNewDateString(item.appointmentDate)}</div>
+                            <div className="text-sm"><b>Start-Time: </b>{item.startTime}</div>
+                            <Link href={`/appointments/${item._id}/edit`} 
                              className="inline-block rounded-md bg-amber-500 px-3 py-2 text-white! shadow-sm hover:bg-amber-600"
                             >
                                 Edit
                             </Link>
                             <form action={deleteAppointment} className="ml-2 inline-block">
-                                <input type="hidden" name="appointmentId" value={appointmentItem._id} />
+                                <input type="hidden" name="appointmentId" value={item._id} />
                                 <button
                                     type="submit"
                                     className="inline-block rounded-md bg-red-500 px-3 py-2 text-white! shadow-sm hover:bg-red-600"
