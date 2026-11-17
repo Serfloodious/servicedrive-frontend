@@ -1,9 +1,12 @@
-import Service from "@/db/models/Service";
-import { dbConnect } from "@/db/dbConnect";
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 
 export default async function AddService() {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.token) redirect("/login");
+    if (session.user.role !== "admin") redirect("/services");
 
     const addService = async (addServiceForm: FormData) => {
         "use server";
@@ -12,18 +15,33 @@ export default async function AddService() {
         const estimatedDuration = addServiceForm.get("duration")
         const serviceFee = addServiceForm.get("serviceFee")
 
-        try {
-            await dbConnect();
-            const service = await Service.create({
+        if (![name, description, estimatedDuration, serviceFee]
+            .every((value) => typeof value === "string" && value.trim().length > 0)) {
+            throw new Error("Please complete all service fields");
+        }
+
+        const currentSession = await getServerSession(authOptions);
+        if (!currentSession?.user?.token || currentSession.user.role !== "admin") {
+            throw new Error("You must be an admin to add a service");
+        }
+
+        const response = await fetch("http://localhost:5000/api/v1/services", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${currentSession.user.token}`,
+            },
+            body: JSON.stringify({
                 name,
                 description,
                 estimatedDuration: Number(estimatedDuration),
-                serviceFee: Number(serviceFee)
-            });
-            console.log("Service added successfully: ", service);
-        } catch (error) {
-            console.error(error);
-            throw new Error("Failed to add service");
+                serviceFee: Number(serviceFee),
+            }),
+        });
+
+        if (!response.ok) {
+            const result = await response.json().catch(() => null);
+            throw new Error(result?.error || "Failed to add service");
         }
 
         updateTag("services");

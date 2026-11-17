@@ -9,7 +9,6 @@ export default async function ServiceCatalog({servicesJson}: {servicesJson: Prom
     
     const readyServicesJson = await servicesJson;
     const session = await getServerSession(authOptions);
-    if (!session || !session.user.token) return null;
 
     return (
         <>
@@ -26,7 +25,7 @@ export default async function ServiceCatalog({servicesJson}: {servicesJson: Prom
                 )}
             </div>
             {
-                session.user.role === "admin" ?
+                session?.user?.role === "admin" ?
                 <Link href="/services/add"
                  className="inline-block rounded-md bg-sky-600 px-3 py-2 text-white! shadow-sm hover:bg-indigo-600"
                 >
