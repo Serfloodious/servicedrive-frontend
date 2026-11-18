@@ -1,6 +1,10 @@
 export default async function userRegister(userName: string, userTel: string, userEmail: string, userPassword: string) {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? process.env.BACKEND_URL;
+    if (!backendUrl) {
+        throw new Error("Backend URL is not configured.");
+    }
 
-    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/auth/register`, {
+    const response = await fetch(`${backendUrl}/api/v1/auth/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
