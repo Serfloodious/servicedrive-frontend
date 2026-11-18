@@ -6,6 +6,7 @@ import { notFound, redirect } from "next/navigation";
 
 type EditAppointmentPageProps = {
     params: Promise<{ aid: string }>;
+    searchParams: Promise<{ error?: string }>;
 };
 
 type AppointmentDetails = {
@@ -19,8 +20,10 @@ type AppointmentDetails = {
     startTime: string;
 };
 
-export default async function EditAppointment({ params }: EditAppointmentPageProps) {
+export default async function EditAppointment({ params, searchParams }: EditAppointmentPageProps) {
     const { aid } = await params;
+    const { error: errorParam } = await searchParams;
+    const errorMessage = typeof errorParam === "string" ? errorParam : undefined;
     const session = await getServerSession(authOptions);
     if (!session?.user?.token) return null;
 
@@ -53,12 +56,12 @@ export default async function EditAppointment({ params }: EditAppointmentPagePro
 
         if (![service, registrationNumber, brand, model, appointmentDate, startTime]
             .every((value): value is string => typeof value === "string" && value.trim().length > 0)) {
-            throw new Error("Please complete all appointment fields");
+            redirect(`/appointments/${aid}/edit?error=${encodeURIComponent("Please complete all appointment fields")}`);
         }
 
         const currentSession = await getServerSession(authOptions);
         if (!currentSession?.user?.token) {
-            throw new Error("You must be logged in to edit an appointment");
+            redirect(`/appointments/${aid}/edit?error=${encodeURIComponent("You must be logged in to edit an appointment")}`);
         }
 
         const response = await fetch(`${process.env.BACKEND_URL}/api/v1/appointments/${aid}`, {
@@ -79,7 +82,8 @@ export default async function EditAppointment({ params }: EditAppointmentPagePro
 
         if (!response.ok) {
             const result = await response.json().catch(() => null);
-            throw new Error(result?.error || "Failed to update appointment");
+            const message = result?.error || "Failed to update appointment";
+            redirect(`/appointments/${aid}/edit?error=${encodeURIComponent(message)}`);
         }
 
         updateTag("appointments");
@@ -90,6 +94,11 @@ export default async function EditAppointment({ params }: EditAppointmentPagePro
         <main className="w-full p-5 flex flex-col items-center">
             <form action={updateAppointment} className="w-full max-w-4xl bg-slate-100 p-5" id="appointmentForm">
                 <div className="text-xl text-blue-700">Edit Appointment</div>
+                {errorMessage && (
+                    <p role="alert" className="my-3 rounded border border-red-300 bg-red-50 p-3 text-red-700">
+                        {errorMessage}
+                    </p>
+                )}
                 <div className="flex items-center w-full my-2">
                     <label className="w-auto block whitespace-nowrap text-gray-700 pr-4" htmlFor="service">Service</label>
                     <select required id="service" name="service" form="appointmentForm" defaultValue={appointment.service._id}
