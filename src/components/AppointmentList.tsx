@@ -55,7 +55,7 @@ export default async function AppointmentList({
                 {
                     readyAppointmentsJson.count > 0 ? readyAppointmentsJson.data.map((item) => (
                         <div className="w-full rounded bg-slate-200 px-5 py-2" key={item._id}>
-                            <div className="text-xl"><b>{item.name}</b></div>
+                            <div className="text-xl"><b>{item.service?.name ?? "Unknown Service"}</b></div>
                             <div className="text-sm"><b>Registration-Number: </b>{item.registrationNumber}</div>
                             <div className="text-sm"><b>Brand: </b>{item.brand}</div>
                             <div className="text-sm"><b>Model: </b>{item.model}</div>

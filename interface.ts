@@ -16,8 +16,10 @@ export interface ServiceJson {
 
 export interface AppointmentItem {
   _id: string;
-  service: string;
-  name: string;
+  service: {
+    _id: string;
+    name: string;
+  } | null;
   registrationNumber: string;
   brand: string;
   model: string;
