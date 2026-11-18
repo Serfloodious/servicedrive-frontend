@@ -34,7 +34,7 @@ export default async function AppointmentList({
             throw new Error("Appointment ID is required");
         }
 
-        const response = await fetch(`http://localhost:5000/api/v1/appointments/${appointmentId}`, {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/appointments/${appointmentId}`, {
             method: "DELETE",
             headers: {
                 authorization: `Bearer ${session.user.token}`,

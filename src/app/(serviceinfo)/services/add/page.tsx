@@ -25,7 +25,7 @@ export default async function AddService() {
             throw new Error("You must be an admin to add a service");
         }
 
-        const response = await fetch("http://localhost:5000/api/v1/services", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/services`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

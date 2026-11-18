@@ -25,7 +25,7 @@ export default async function EditAppointment({ params }: EditAppointmentPagePro
     if (!session?.user?.token) return null;
 
     const [appointmentResponse, servicesJson] = await Promise.all([
-        fetch(`http://localhost:5000/api/v1/appointments/${aid}`, {
+        fetch(`${process.env.BACKEND_URL}/api/v1/appointments/${aid}`, {
             headers: {
                 authorization: `Bearer ${session.user.token}`,
             },
@@ -61,7 +61,7 @@ export default async function EditAppointment({ params }: EditAppointmentPagePro
             throw new Error("You must be logged in to edit an appointment");
         }
 
-        const response = await fetch(`http://localhost:5000/api/v1/appointments/${aid}`, {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/appointments/${aid}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

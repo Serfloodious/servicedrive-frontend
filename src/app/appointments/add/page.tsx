@@ -43,7 +43,7 @@ export default async function AddAppointment({ searchParams }: AddAppointmentPag
             redirect("/appointments/add?error=You%20must%20be%20logged%20in%20to%20add%20an%20appointment");
         }
 
-        const response = await fetch("http://localhost:5000/api/v1/appointments", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/appointments`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

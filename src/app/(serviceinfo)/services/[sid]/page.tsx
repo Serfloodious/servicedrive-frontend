@@ -27,7 +27,7 @@ export default async function ServiceDetailPage({params}: {params: Promise<{sid:
             throw new Error("You must be an admin to delete a service");
         }
 
-        const response = await fetch(`http://localhost:5000/api/v1/services/${serviceId}`, {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/services/${serviceId}`, {
             method: "DELETE",
             headers: {
                 authorization: `Bearer ${currentSession.user.token}`,

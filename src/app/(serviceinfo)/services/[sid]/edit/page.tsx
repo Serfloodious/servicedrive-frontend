@@ -21,7 +21,7 @@ export default async function EditService({ params }: EditServicePageProps) {
     if (!session?.user?.token) return null;
     if (session.user.role !== "admin") redirect(`/services/${sid}`);
 
-    const serviceResponse = await fetch(`http://localhost:5000/api/v1/services/${sid}`, {
+    const serviceResponse = await fetch(`${process.env.BACKEND_URL}/api/v1/services/${sid}`, {
         headers: {
             authorization: `Bearer ${session.user.token}`,
         },
@@ -53,7 +53,7 @@ export default async function EditService({ params }: EditServicePageProps) {
             throw new Error("You must be an admin to edit a service");
         }
 
-        const response = await fetch(`http://localhost:5000/api/v1/services/${sid}`, {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/services/${sid}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
